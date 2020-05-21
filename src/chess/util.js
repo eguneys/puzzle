@@ -17,7 +17,20 @@ export const squares = (() => {
   return res;
 })();
 
+export const whiteBaseRank = '2';
+export const blackBaseRank = '7';
+export const whitePromoteRank = '8';
+export const blackPromoteRank = '1';
+
 export const colors = ['white', 'black'];
+
+export const oppositeColor = (c1, c2) => (c1 === 'white')?c2==='black':c2==='white';
+
+export const oppositePiece = (c1, c2) => oppositeColor(c1.color, c2.color);
+export const colorPiece = c1 => c1.color;
+export const rolePiece = c1 => c1.role;
+
+export const pawnPiece = c1 => rolePiece(c1) === 'pawn';
 
 export const roles = ['knight', 'pawn', 'king', 'queen', 'rook', 'bishop'];
 

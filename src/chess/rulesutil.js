@@ -185,6 +185,16 @@ const toSquaresOfV = vV => {
   return res;
 };
 
+export const whitePawnBaseRange = toSquaresOfV(vPawnMovesWhiteBase);
+export const whitePawnRange = toSquaresOfV(vPawnMovesWhite);
+export const blackPawnBaseRange = toSquaresOfV(vPawnMovesBlackBase);
+export const blackPawnRange = toSquaresOfV(vPawnMovesBlack);
+
+export const whitePawnAttacks = toSquaresOfV(vPawnAttacksWhite);
+export const blackPawnAttacks = toSquaresOfV(vPawnAttacksBlack);
+
+
 export const straightRange = toSquaresOfV(vStraights);
 export const diagonalRange = toSquaresOfV(vDiagonals);
-
+export const knightRange = toSquaresOfV(vKnights);
+export const kingRange = toSquaresOfV(vKings);

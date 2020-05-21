@@ -27,7 +27,9 @@ const readBoard = board => {
 };
 
 const readBoardLine = (line, iRank) => {
+  let res = {};
   let iFile = 0;
+
   for (let char of line) {
     if (char >= '1' && char <= '8') {
       iFile += parseInt(char);
@@ -36,8 +38,9 @@ const readBoardLine = (line, iRank) => {
     let rank = util.ranks[iRank],
         file = util.files[iFile];
 
-    return {
-      [(file+rank)]: util.allByForsyth[char]
-    };
+    iFile++;
+
+    res[(file+rank)] = util.allByForsyth[char];
   }
+  return res;
 };
