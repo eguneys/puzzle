@@ -17,6 +17,7 @@ export default function Rules(ctx) {
       moves,
       filter = new MoveFilter();
 
+  this.board = () => board;
   this.ranges = (square) => ranges[square];
   this.attacks = (square) => attacks[square];
   this.moves = () => moves;
@@ -32,6 +33,8 @@ export default function Rules(ctx) {
     filter.init(moves);
   };
   
+  const selfRules = this;
+
   function readMoves(board, allRanges, allAttacks) {
 
     const { moveFactory } = ctx;
@@ -43,7 +46,7 @@ export default function Rules(ctx) {
     function addMove(from, to) {
       let move = moveFactory.acquire(_ => _.init({
         id: moveId(),
-        board,
+        rules: selfRules,
         from,
         to
       }));

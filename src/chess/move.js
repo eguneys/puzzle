@@ -2,24 +2,29 @@ import * as util from './util';
 
 export default function Move(ctx) {
 
-  let { captureFactory, selfDefenseFactory } = ctx;
+  let { rulesFactory, captureFactory, selfDefenseFactory } = ctx;
 
   let id,
-      board,
+      rules,
       from,
       to;
 
   this.id = () => id;
   this.from = () => from;
   this.to = () => to;
-  this.board = () => board;
+  this.rules = () => rules;
 
-  let getPiece = this.piece = () => board[from];
+  this.afterRules = (depth) => {
+    
+  }; 
+
+  let board = this.board = (square) => rules.board()[square];
+  let getPiece = this.piece = () => board(from);
   
   let getColor = this.color = () => util.colorPiece(getPiece());
   let getRole = this.role = () => util.rolePiece(getPiece());
 
-  let destPiece = this.destPiece = () => board[to];
+  let destPiece = this.destPiece = () => board(to);
 
   let getDestColor = this.destColor = () => {
     let p = destPiece();
@@ -35,7 +40,7 @@ export default function Move(ctx) {
 
   this.init = (data) => {
     id = data.id;
-    board = data.board;
+    rules = data.rules;
     from = data.from;
     to = data.to;
 

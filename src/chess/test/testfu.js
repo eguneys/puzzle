@@ -4,7 +4,7 @@ import { makeTester } from 'testfu';
 
 const fails = messages => ({ fails: messages });
 
-const deep_is_matcher = (a, b) => {
+const deep_is_matcher = (actual, expected) => {
   let messages = [];
 
   return fails(messages);

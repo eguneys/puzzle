@@ -1,5 +1,6 @@
 import Pool from 'poolf';
 
+import Fen from './fen';
 import Rules from './rules';
 
 import Move from './move';
@@ -31,8 +32,12 @@ export const makeSelfDefenseFactory = ctx =>
 
 export const makeRulesFactory = ctx =>
   factoryMaker(() => new Rules(ctx));
+export const makeFenFactory = ctx =>
+  factoryMaker(() => new Fen(ctx));
+
 
 export const injectIntoContext = (ctx) => {
+  ctx.fenFactory = makeFenFactory(ctx);
   ctx.rulesFactory = makeRulesFactory(ctx);
 
   ctx.moveFactory = makeMoveFactory(ctx);

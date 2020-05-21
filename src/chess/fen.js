@@ -1,46 +1,30 @@
-import * as util from './util';
+import { readFen, moveFen } from './fenOld';
 
-// 8/8/8/8/8/8/4R3/8 w - - 0 1
-export const readFen = (fen) => {
+export default function Fen(ctx) {
 
-  let [board,
-       activeColor,
-       castles,
-       enPassant,
-       halfMove,
-       fullMove] = fen.split(' ');
+  let { fenFactory, rulesFactory } = ctx;
 
-  
-  return {
-    board: readBoard(board)
+  let fen;
+  let data;
+
+  this.init = (_data) => {
+    fen = _data.fen;
+
+    data = readFen(fen);
+
   };
-};
 
-const readBoard = board => {
-  let res = {};
-  let lines = board.split('/');
+  this.rules = () => {
+    return rulesFactory.acquire(_ => _.init(data));
+  };
 
-  lines.forEach((line, iRank) => {
-    res = { ...res, ...readBoardLine(line, iRank) };
-  });
-  return res;
-};
+  this.move = (from, to) => {
 
-const readBoardLine = (line, iRank) => {
-  let res = {};
-  let iFile = 0;
+    let newFen = moveFen(fen, from, to);
 
-  for (let char of line) {
-    if (char >= '1' && char <= '8') {
-      iFile += parseInt(char);
-      continue;
-    }
-    let rank = util.ranks[iRank],
-        file = util.files[iFile];
-
-    iFile++;
-
-    res[(file+rank)] = util.allByForsyth[char];
-  }
-  return res;
-};
+    return fenFactory.acquire(_ => _.init({
+      fen: newFen
+    }));
+  };
+  
+}
