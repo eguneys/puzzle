@@ -17,7 +17,7 @@ export default function Fen(ctx) {
 
   this.init = (_data) => {
     fen = _data.fen;
-    depth = _data.depth;
+    depth = _data.depth || 0;
 
     data = readFen(fen);
 

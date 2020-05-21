@@ -24,9 +24,15 @@ export const blackPromoteRank = '1';
 
 export const colors = ['white', 'black'];
 
-export const oppositeColor = (c1, c2) => (c1 === 'white')?c2==='black':c2==='white';
+export const isOppositeColor = (c1, c2) => (c1 === 'white')?c2==='black':c2==='white';
 
-export const oppositePiece = (c1, c2) => oppositeColor(c1.color, c2.color);
+export const isOppositePiece = (c1, c2) => isOppositeColor(c1.color, c2.color);
+
+export const isRolePiece = (c1, role) => rolePiece(c1) === role;
+export const isColorPiece = (c1, color) => colorPiece(c1) === color;
+
+export const oppositeColor = c1 => c1 === 'white' ? 'black': 'white';
+
 export const colorPiece = c1 => c1.color;
 export const rolePiece = c1 => c1.role;
 

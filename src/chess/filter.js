@@ -1,3 +1,4 @@
+import * as util from './util';
 
 const flatMaybe = fn => _ => {
   let res = fn(_);
@@ -7,15 +8,19 @@ const flatMaybe = fn => _ => {
 export default function MoveFilter() {
 
   let moves,
-      ownerColor;
+      ownerColor,
+      opponentColor;
 
   let noMovesLeft,
       kingNotInCheck,
+      opponentInCheck,
       captures,
       selfDefenses;
 
   this.noMovesLeft = () => noMovesLeft;
   this.kingNotInCheck = () => kingNotInCheck;
+
+  this.opponentInCheck = () => opponentInCheck;
 
   this.captures = () => captures;
   this.selfDefenseFrom = (square) => 
@@ -25,12 +30,10 @@ export default function MoveFilter() {
   this.init = (data) => {
     moves = data.moves;
     ownerColor = data.ownerColor;
+    opponentColor = util.oppositeColor(ownerColor);
 
     noMovesLeft = moves.length === 0;
 
-    kingNotInCheck = moves.flatMap(
-      flatMaybe(_ => _.afterNotInCheck(ownerColor))
-    );
     captures = moves.flatMap(flatMaybe(_ => _.ideaCaptures()));
     selfDefenses = moves.flatMap(flatMaybe(_ => _.ideaSelfDefense()));
   };

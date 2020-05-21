@@ -25,6 +25,10 @@ export default function Move(ctx) {
   let getColor = this.color = () => util.colorPiece(getPiece());
   let getRole = this.role = () => util.rolePiece(getPiece());
 
+  let pieces = this.pieces = () => rules.piecesByColor(getColor());
+  let opponentPieces = this.opponentPieces = () => 
+      rules.piecesByColor(util.oppositeColor(getColor()));
+
   let destPiece = this.destPiece = () => board(to);
 
   let getDestColor = this.destColor = () => {
@@ -53,24 +57,20 @@ export default function Move(ctx) {
   let afterFen;
   this.withAfterFen = (fn) => {
     if (!afterFen && this.depth() < maxDepth) {
-      afterFen = this.fen().move(from, to);
+      afterFen = this.fen().moveClone(from, to);
     }
     if (afterFen) {
       fn(afterFen);
     }
   };
 
-  this.afterNotInCheck = (color) => {
-    let res = true;
-    this.withAfterFen((afterFen) => {
-      res = !afterFen.isCheck(color);
-    });
-    return res;
+  const avoidsCheck = () => {
+
   };
 
   const captures = () => {
     let destColor = getDestColor();
-    return destColor && util.oppositeColor(destColor, getColor());
+    return destColor && util.isOppositeColor(destColor, getColor());
   };
 
   const makeCapture = () => {

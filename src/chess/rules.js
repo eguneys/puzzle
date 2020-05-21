@@ -2,6 +2,7 @@ import { makeId } from './util2';
 import * as rutil from './rulesutil';
 import * as util from './util';
 
+import Pieces from './pieces';
 import MoveFilter from './filter';
 
 const moveId = makeId('move');
@@ -14,6 +15,10 @@ export default function Rules(ctx) {
 
   let ranges,
       attacks,
+      piecesByColor = {
+        white: new Pieces(ctx, 'white'),
+        black: new Pieces(ctx, 'black')
+      },
       moves,
       threats = new MoveFilter(),
       filter = new MoveFilter();
@@ -24,6 +29,7 @@ export default function Rules(ctx) {
   this.activeColor = () => fen.data().activeColor;
   this.ranges = (square) => ranges[square];
   this.attacks = (square) => attacks[square];
+  this.pieces = (color) => piecesByColor[color];
   this.moves = () => moves;
   this.threats = threats;
   this.filter = filter;
@@ -38,6 +44,8 @@ export default function Rules(ctx) {
     attacks = readAttacks(board);
     moves = readMoves(activeColor, board, ranges, attacks);
 
+    piecesByColor.white.init(board);
+    piecesByColor.black.init(board);
 
     threats.init({ 
       ownerColor: util.oppositeColor(activeColor),
@@ -46,7 +54,7 @@ export default function Rules(ctx) {
       ownerColor: activeColor,
       moves: moves.selfMoves });
   };
-  
+
   const selfRules = this;
 
   function readMoves(activeColor, board, allRanges, allAttacks) {

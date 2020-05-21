@@ -90,7 +90,7 @@ function readCaptures(board, allAttacks) {
       let attackedPiece = board[attackedSquare];
 
       if (attackedPiece && 
-          util.oppositePiece(attackerPiece, attackedPiece)) {
+          util.isOppositePiece(attackerPiece, attackedPiece)) {
         captures.push(attackedSquare);
       }
     }
