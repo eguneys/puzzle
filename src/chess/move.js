@@ -61,7 +61,7 @@ export default function Move(ctx) {
   };
 
   this.afterNotInCheck = (color) => {
-    let res = false;
+    let res = true;
     this.withAfterFen((afterFen) => {
       res = !afterFen.isCheck(color);
     });
