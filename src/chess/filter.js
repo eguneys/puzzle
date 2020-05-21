@@ -2,9 +2,13 @@
 export default function MoveFilter() {
 
   let moves,
-      captures;
+      captures,
+      selfDefenses;
 
   this.captures = () => captures;
+  this.selfDefenseFrom = (square) => 
+  selfDefenses
+    .filter(_ => _.from() === square);
   
   this.init = (data) => {
     moves = data.allMoves;
@@ -12,6 +16,11 @@ export default function MoveFilter() {
     captures = moves.flatMap(_ => {
       let capture = _.ideaCaptures();
       return capture?[capture]:[];
+    });
+
+    selfDefenses = moves.flatMap(_ => {
+      let selfDefense = _.ideaSelfDefense();
+      return selfDefense?[selfDefense]:[];
     });
   };
 

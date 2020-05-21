@@ -2,7 +2,7 @@ import * as util from './util';
 
 export default function Move(ctx) {
 
-  let { captureFactory } = ctx;
+  let { captureFactory, selfDefenseFactory } = ctx;
 
   let id,
       board,
@@ -49,17 +49,27 @@ export default function Move(ctx) {
     return destColor && util.oppositeColor(destColor, getColor());
   };
 
-  const makeCapture = (id, board, from, to) => {
+  const makeCapture = () => {
     return captureFactory.acquire(_ => _.init({
       move: this
     }));
   };
 
+  const makeSelfDefense = () => {
+    return selfDefenseFactory.acquire(_ => _.init({
+      move: this
+    }));    
+  };
+
   const initIdeas = () => {
     if (captures()) {
-      ideas['captures'] = makeCapture(id, board, from, to);
+      ideas['captures'] = makeCapture();
     }
+
+
+    ideas['selfdefense'] = makeSelfDefense();
   };
 
   this.ideaCaptures = () => ideas['captures'];
+  this.ideaSelfDefense = () => ideas['selfdefense'];
 }

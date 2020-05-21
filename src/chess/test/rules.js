@@ -3,7 +3,6 @@ import { log, is, deep_is, array_is } from 'testfu';
 import * as util from './util';
 
 import { readFen } from '../fen';
-import { readRules } from '../rules';
 import * as facs from '../factories';
 
 export default function RulesTest() {
@@ -14,13 +13,14 @@ export default function RulesTest() {
   let ctx = {
   };
 
-  ctx.moveFactory = facs.makeMoveFactory(ctx);
-  ctx.captureFactory = facs.makeCapturesFactory(ctx);
+  facs.injectIntoContext(ctx);
+
+  const { rulesFactory } = ctx;
 
   let rookFen = readFen('8/8/8/8/8/8/4R3/8 w - - 0 1');
-  let rookRules = readRules(ctx, rookFen);
+  let rookRules = rulesFactory.acquire(_ => _.init(rookFen));
 
-  array_is('rook on e2 ranges', rookRules.ranges['e2'], util.markedSquares(`
+  array_is('rook on e2 ranges', rookRules.ranges('e2'), util.markedSquares(`
 ....x...
 ....x...
 ....x...
@@ -32,7 +32,7 @@ xxxx.xxx
 `));
 
   let queenFen = readFen('8/8/2r2p2/8/8/5Q2/8/8 w - - 0 1');
-  let queenRules = readRules(ctx, queenFen);
+  let queenRules = rulesFactory.acquire(_ => _.init(queenFen));
 
   array_is('queen on f3 captures', 
            queenRules.filter.captures()
@@ -46,6 +46,22 @@ xxxx.xxx
 ........
 ........
 ........
+`));
+
+  let defence1Fen = readFen('8/8/8/4bb2/8/8/P2P4/R2K4 w - - 0 1');
+  let defence1Rules = rulesFactory.acquire(_ => _.init(defence1Fen));
+
+  array_is('defence 1 rook vs bishop pair', 
+           defence1Rules.filter.selfDefenseFrom('a1')
+           .map(_ => _.to()), util.markedSquares(`
+x.......
+x.......
+x.......
+x.......
+x.......
+x.......
+x.......
+..xxxxxx
 `));
   
 }
