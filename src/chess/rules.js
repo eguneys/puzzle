@@ -10,36 +10,51 @@ import { readRanges, readAttacks } from './rulesOld';
 
 export default function Rules(ctx) {
   
-  let board;
+  let fen;
 
   let ranges,
       attacks,
       moves,
+      threats = new MoveFilter(),
       filter = new MoveFilter();
 
-  this.board = () => board;
+  this.fen = () => fen;
+  this.depth = () => fen.depth();
+  this.board = () => fen.data().board;
+  this.activeColor = () => fen.data().activeColor;
   this.ranges = (square) => ranges[square];
   this.attacks = (square) => attacks[square];
   this.moves = () => moves;
+  this.threats = threats;
   this.filter = filter;
 
-  this.init = fenData => {
-    board = fenData.board;
+  this.init = data => {
+    fen = data.fen;
+
+    let board = this.board();
+    let activeColor = this.activeColor();
 
     ranges = readRanges(board);
     attacks = readAttacks(board);
-    moves = readMoves(board, ranges, attacks);
+    moves = readMoves(activeColor, board, ranges, attacks);
 
-    filter.init(moves);
+
+    threats.init({ 
+      ownerColor: util.oppositeColor(activeColor),
+      moves: moves.threatMoves });
+    filter.init({ 
+      ownerColor: activeColor,
+      moves: moves.selfMoves });
   };
   
   const selfRules = this;
 
-  function readMoves(board, allRanges, allAttacks) {
+  function readMoves(activeColor, board, allRanges, allAttacks) {
 
     const { moveFactory } = ctx;
 
-    let allMoves = [],
+    let selfMoves = [],
+        threatMoves = [],
         fromMoves = {},
         toMoves = {};
 
@@ -50,11 +65,15 @@ export default function Rules(ctx) {
         from,
         to
       }));
+      let fromColor = util.colorPiece(board[from]);
 
       fromMoves[from] = fromMoves[from] || {};
       toMoves[to] = toMoves[to] || {};
 
-      allMoves.push(move);
+
+      (fromColor === activeColor)?selfMoves.push(move):
+        threatMoves.push(move);
+
       fromMoves[from][to] = move;
       toMoves[to][from] = move;
     };
@@ -77,7 +96,8 @@ export default function Rules(ctx) {
       }
     }
     
-    return { allMoves,
+    return { selfMoves,
+             threatMoves,
              fromMoves,
              toMoves };
   }

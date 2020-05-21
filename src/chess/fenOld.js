@@ -85,8 +85,18 @@ export const readFen = (fen) => {
 
   
   return {
-    board: readBoard(board)
+    board: readBoard(board),
+    activeColor: readActiveColor(activeColor)
   };
+};
+
+const activeColors = {
+  'w': 'white',
+  'b': 'black'
+};
+
+export const readActiveColor = activeColor => {
+  return activeColors[activeColor];
 };
 
 export const readBoard = board => {

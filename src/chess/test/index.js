@@ -3,7 +3,7 @@ import rulesTest from './rules';
 
 export default function Tests() {
 
-  fenTest();
-  //rulesTest();
+  // fenTest();
+  rulesTest();
   
 }

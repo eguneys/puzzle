@@ -1,10 +1,13 @@
 import * as util from './util';
 
+const maxDepth = 2;
+
 export default function Move(ctx) {
 
-  let { rulesFactory, captureFactory, selfDefenseFactory } = ctx;
+  let { captureFactory, selfDefenseFactory } = ctx;
 
   let id,
+      depth,
       rules,
       from,
       to;
@@ -13,10 +16,8 @@ export default function Move(ctx) {
   this.from = () => from;
   this.to = () => to;
   this.rules = () => rules;
-
-  this.afterRules = (depth) => {
-    
-  }; 
+  this.fen = () => rules.fen();
+  this.depth = () => rules.depth();
 
   let board = this.board = (square) => rules.board()[square];
   let getPiece = this.piece = () => board(from);
@@ -47,6 +48,24 @@ export default function Move(ctx) {
     ideas = {};
 
     initIdeas();
+  };
+
+  let afterFen;
+  this.withAfterFen = (fn) => {
+    if (!afterFen && this.depth() < maxDepth) {
+      afterFen = this.fen().move(from, to);
+    }
+    if (afterFen) {
+      fn(afterFen);
+    }
+  };
+
+  this.afterNotInCheck = (color) => {
+    let res = false;
+    this.withAfterFen((afterFen) => {
+      res = !afterFen.isCheck(color);
+    });
+    return res;
   };
 
   const captures = () => {
